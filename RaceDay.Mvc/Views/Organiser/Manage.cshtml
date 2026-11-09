@@ -1,0 +1,78 @@
+@model ManageRace
+@{ ViewData["Title"] = "Manage event"; }
+<a asp-action="Index">← Organiser dashboard</a>
+<h1>@Model.Race.Name</h1>
+<p>@Model.Race.EventDate.ToString("dd MMM yyyy") · @Model.Race.Location</p>
+<div class="inline">
+    <a class="button" asp-action="Edit" asp-route-id="@Model.Race.Id">Edit event and banner</a>
+    <a asp-controller="Races" asp-action="Details" asp-route-id="@Model.Race.Id">View public page</a>
+    @if (Model.Entries.Length == 0)
+    {
+        <details>
+            <summary>Delete event</summary>
+            <form asp-action="Delete" asp-route-id="@Model.Race.Id" method="post" class="stack">
+                <p>Permanently remove this event and its categories?</p>
+                <button class="danger">Confirm deletion</button>
+            </form>
+        </details>
+    }
+</div>
+<section class="panel">
+    <h2>Categories</h2>
+    @if (Model.Race.Categories is { Length: > 0 } categories)
+    {
+        <ul>
+        @foreach (var category in categories)
+        {
+            <li>@category.Name · @category.Description</li>
+        }
+        </ul>
+    }
+    else { <p>Add a category before participants can enter.</p> }
+    <form asp-action="AddCategory" asp-route-id="@Model.Race.Id" method="post" class="fields">
+        <label>Name <input name="CategoryName" maxlength="100" required></label>
+        <label>Description <input name="Description" maxlength="200"></label>
+        <button>Create category</button>
+    </form>
+    <form asp-action="AttachCategory" asp-route-id="@Model.Race.Id" method="post" class="fields">
+        <label>Link a category
+            <select name="categoryId">
+                @foreach (var category in Model.Categories) { <option value="@category.Id">@category.Name</option> }
+            </select>
+        </label>
+        <button>Link category</button>
+    </form>
+</section>
+<section class="panel">
+    <h2>Enrolments and results <span class="count">@Model.Entries.Length</span></h2>
+    @if (Model.Race.EventDate.Date >= DateTime.Today)
+    {
+        <p>Result entry opens the day after the event.</p>
+    }
+    @if (Model.Entries.Length == 0) { <p>No participants have entered yet.</p> }
+    @foreach (var entry in Model.Entries)
+    {
+        <article class="entry">
+            <h3>@entry.Participant?.FirstName @entry.Participant?.LastName</h3>
+            <p>@entry.Category?.Name · <span class="badge @entry.Status.ToLowerInvariant()">@entry.Status</span></p>
+            @if (Model.Race.EventDate.Date < DateTime.Today)
+            {
+                <form asp-action="Publish" asp-route-id="@Model.Race.Id" method="post" class="fields">
+                    <input type="hidden" name="entryId" value="@entry.Id">
+                    <input type="hidden" name="resultId" value="@entry.Result?.Id">
+                    <label>Finish time (hh:mm:ss) <input name="FinishTime" placeholder="00:48:12" value="@(entry.Result?.FinishTime?.ToString("c"))" required></label>
+                    <label>Position <input name="Position" type="number" min="1" value="@entry.Result?.Position" required></label>
+                    <label>Result status
+                        <select name="ResultStatus">
+                            @foreach (var status in new[] { "Finished", "DidNotFinish", "Disqualified" })
+                            {
+                                <option selected="@(entry.Result?.Status == status)">@status</option>
+                            }
+                        </select>
+                    </label>
+                    <button>@(entry.Result is null ? "Publish result" : "Update published result")</button>
+                </form>
+            }
+        </article>
+    }
+</section>

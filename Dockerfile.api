@@ -1,0 +1,15 @@
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
+COPY Assignment2/Assignment2.csproj Assignment2/
+RUN dotnet restore Assignment2/Assignment2.csproj
+COPY Assignment2/ Assignment2/
+RUN dotnet publish Assignment2/Assignment2.csproj -c Release --no-restore -o /app/publish /p:UseAppHost=false
+
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
+WORKDIR /app
+COPY --from=build /app/publish .
+RUN mkdir /data && chown "$APP_UID" /data
+ENV ASPNETCORE_HTTP_PORTS=8080
+EXPOSE 8080
+USER $APP_UID
+ENTRYPOINT ["dotnet", "Assignment2.dll"]

@@ -1,0 +1,24 @@
+@model Entry[]
+@{ ViewData["Title"] = "My events"; }
+<h1>My events</h1>
+@if (Model.Length == 0) { <p class="panel">You have no entries yet. <a asp-controller="Races" asp-action="Index">Find an event</a>.</p> }
+<div class="cards">
+@foreach (var entry in Model)
+{
+    <article class="panel">
+        <p class="eyebrow">@entry.Event.EventDate.ToString("dd MMM yyyy")</p>
+        <h2><a asp-controller="Races" asp-action="Details" asp-route-id="@entry.Event.Id">@entry.Event.Name</a></h2>
+        <p>@entry.Event.Location · @entry.Category?.Name</p>
+        <span class="badge @entry.Status.ToLowerInvariant()">@entry.Status</span>
+        @if (entry.Event.EventDate.Date >= DateTime.Today)
+        {
+            <details>
+                <summary>Cancel entry</summary>
+                <form asp-action="Cancel" asp-route-id="@entry.Id" method="post">
+                    <button class="danger">Confirm cancellation</button>
+                </form>
+            </details>
+        }
+    </article>
+}
+</div>

@@ -1,0 +1,52 @@
+@{
+    var role = Context.Session.GetString("Role");
+}
+<!DOCTYPE html>
+<html lang="en-ZA">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>@ViewData["Title"] | RaceDay</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/bootstrap.min.css" asp-append-version="true">
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="top">
+    <nav class="shell navigation d-flex" aria-label="Main navigation">
+        <a class="logo" asp-controller="Races" asp-action="Index">RACE<span>DAY</span></a>
+        <div class="links">
+            <a asp-controller="Races" asp-action="Index">Browse events</a>
+            @if (role == "Organiser")
+            {
+                <a asp-controller="Organiser" asp-action="Index">Organiser dashboard</a>
+                <a asp-controller="Organiser" asp-action="Edit" asp-route-id="">Create event</a>
+            }
+            else if (role == "Participant")
+            {
+                <a asp-controller="Participant" asp-action="Entries">My events</a>
+                <a asp-controller="Participant" asp-action="Results">My results</a>
+                <a asp-controller="Participant" asp-action="Profile">Profile</a>
+            }
+            @if (role is null)
+            {
+                <a asp-controller="Account" asp-action="Login">Sign in</a>
+                <a asp-controller="Account" asp-action="Register">Register</a>
+            }
+            else
+            {
+                <form asp-controller="Account" asp-action="Logout" method="post">
+                    <button class="secondary">Sign out</button>
+                </form>
+            }
+        </div>
+    </nav>
+</header>
+<main id="main" class="shell">
+    @if (TempData["Error"] is string error) { <div class="alert error" role="alert">@error</div> }
+    @if (TempData["Success"] is string success) { <div class="alert success" role="status">@success</div> }
+    @RenderBody()
+</main>
+<footer class="shell">RaceDay · Running, walking and cycling in South Africa</footer>
+</body>
+</html>

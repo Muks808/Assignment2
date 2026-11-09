@@ -1,0 +1,5 @@
+@model string
+@{ ViewData["Title"] = "Request unavailable"; }
+<h1>We couldn’t open this page</h1>
+<p>@Model</p>
+<a class="button" asp-controller="Races" asp-action="Index">Browse events</a>

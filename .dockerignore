@@ -1,0 +1,13 @@
+**/bin
+**/obj
+.vs
+.git
+
+.verify
+.env
+**/*.db*
+
+.raceday-blobs
+**/.raceday-blobs
+
+Assignment2/data

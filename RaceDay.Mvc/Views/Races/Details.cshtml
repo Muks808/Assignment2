@@ -1,0 +1,47 @@
+@model Race
+@{ ViewData["Title"] = Model.Name; }
+<a asp-action="Index">← Upcoming events</a>
+<h1>@Model.Name</h1>
+<p class="eyebrow">@Model.EventType · @Model.DistanceKm.ToString("0.##") km</p>
+@if (Model.BannerUrl is not null)
+{
+    <img class="banner wide" src="@Url.Action("Image", new { kind = "banner", id = Model.Id })" alt="Banner for @Model.Name">
+}
+<p><strong>@Model.EventDate.ToString("dd MMMM yyyy")</strong> · @Model.Location, @Model.Province · @Model.StartTime.ToString(@"hh\:mm") · R @Model.EntryFee.ToString("0.00")</p>
+<p class="description">@Model.Description</p>
+<section class="panel">
+    <h2>Categories</h2>
+    @if (Model.Categories is { Length: > 0 } categories)
+    {
+        <ul>
+        @foreach (var category in categories)
+        {
+            <li>
+                @category.Name
+                <span>@category.Description</span>
+            </li>
+        }
+        </ul>
+        @if (Model.EventDate.Date < DateTime.Today)
+        {
+            <p>Entries are closed for this event.</p>
+        }
+        else if (Context.Session.GetString("Role") == "Participant")
+        {
+            <form asp-controller="Participant" asp-action="Enter" asp-route-id="@Model.Id" method="post" class="inline">
+                <label>Choose a category
+                    <select name="CategoryID" required>
+                        <option value="">Select category</option>
+                        @foreach (var category in categories) { <option value="@category.Id">@category.Name</option> }
+                    </select>
+                </label>
+                <button>Enter event</button>
+            </form>
+        }
+        else if (Context.Session.GetInt32("UserId") is null)
+        {
+            <a asp-controller="Account" asp-action="Login">Sign in as a Participant to enter</a>
+        }
+    }
+    else { <p>Categories have yet to be added.</p> }
+</section>

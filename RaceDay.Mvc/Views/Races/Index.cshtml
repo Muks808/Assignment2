@@ -1,0 +1,38 @@
+@model RaceList
+@{ ViewData["Title"] = "Upcoming events"; }
+<section class="hero">
+    <p class="eyebrow">South Africa · Run / Walk / Cycle</p>
+    <h1>Find your next race.</h1>
+    <p>Browse upcoming events, choose a category and book your place at the start.</p>
+</section>
+<form asp-action="Index" method="get" class="panel inline">
+    <label>Event type
+        <select name="type">
+            <option value="">All event types</option>
+            @foreach (var type in new[] { "Run", "Walk", "Cycle" })
+            {
+                <option value="@type" selected="@(Model.Type == type)">@type</option>
+            }
+        </select>
+    </label>
+    <label>From date <input type="date" name="fromDate" value="@Model.FromDate.ToString("yyyy-MM-dd")"></label>
+    <button>Filter events</button>
+    <a asp-action="Index">Clear filters</a>
+</form>
+<h2>Upcoming events <span class="count">@Model.Races.Length</span></h2>
+@if (Model.Races.Length == 0) { <p class="panel">No upcoming events match your filters.</p> }
+<div class="cards">
+@foreach (var race in Model.Races)
+{
+    <article class="panel">
+        @if (race.BannerUrl is not null)
+        {
+            <img class="banner" src="@Url.Action("Image", new { kind = "banner", id = race.Id })" alt="" loading="lazy">
+        }
+        <p class="eyebrow">@race.EventType · @race.DistanceKm.ToString("0.##") km</p>
+        <h3>@race.Name</h3>
+        <p>@race.EventDate.ToString("dd MMM yyyy") · @race.Location</p>
+        <a class="button secondary" asp-action="Details" asp-route-id="@race.Id">View event</a>
+    </article>
+}
+</div>

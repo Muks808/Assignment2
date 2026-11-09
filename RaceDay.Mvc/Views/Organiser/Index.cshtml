@@ -1,0 +1,23 @@
+@model Race[]
+@{ ViewData["Title"] = "Organiser dashboard"; }
+<section class="hero">
+    <p class="eyebrow">Organiser dashboard</p>
+    <h1>Manage your race calendar.</h1>
+    <p>@Model.Length events · @Model.Sum(race => race.EnrolmentCount) total enrolments</p>
+    <a class="button" asp-action="Edit">Create event</a>
+</section>
+<h2>Your events</h2>
+@if (Model.Length == 0) { <p class="panel">Create your first event to start taking entries.</p> }
+<div class="cards">
+@foreach (var race in Model)
+{
+    <article class="panel">
+        <p class="eyebrow">@(race.EventDate.Date >= DateTime.Today ? "Upcoming" : "Past") · @race.EventType</p>
+        <h3>@race.Name</h3>
+        <p>@race.EventDate.ToString("dd MMM yyyy") · @race.Location</p>
+        <p><strong>@race.EnrolmentCount</strong> enrolments</p>
+        <a class="button" asp-action="Manage" asp-route-id="@race.Id">Manage event</a>
+        <a asp-action="Edit" asp-route-id="@race.Id">Edit details</a>
+    </article>
+}
+</div>

@@ -1,0 +1,23 @@
+@model RaceResult[]
+@{ ViewData["Title"] = "My results"; }
+<h1>My results</h1>
+@if (Model.Length == 0) { <p class="panel">Your race history will appear here after an organiser publishes your result.</p> }
+else
+{
+    <div class="panel table-responsive">
+        <table class="table align-middle">
+            <thead><tr><th>Event</th><th>Date</th><th>Category</th><th>Finish time</th><th>Position</th><th>Status</th></tr></thead>
+            <tbody>
+            @foreach (var result in Model)
+            {
+                <tr>
+                    <td><a asp-controller="Races" asp-action="Details" asp-route-id="@result.Event!.Id">@result.Event!.Name</a></td>
+                    <td>@result.Event!.EventDate.ToString("dd MMM yyyy")</td>
+                    <td>@result.Category</td><td>@(result.Status == "Finished" ? result.FinishTime?.ToString("c") : "—")</td>
+                    <td>@result.Placing</td><td>@result.Status</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+}

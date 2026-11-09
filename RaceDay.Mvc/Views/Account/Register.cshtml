@@ -1,0 +1,17 @@
+@model RegisterDto
+@{ ViewData["Title"] = "Create account"; }
+<section class="panel narrow">
+    <p class="eyebrow">Join RaceDay</p>
+    <h1>Create an account</h1>
+    <form asp-action="Register" method="post" class="stack">
+        <div asp-validation-summary="All" class="validation"></div>
+        <label asp-for="FirstName">First name</label><input asp-for="FirstName" autocomplete="given-name" required>
+        <label asp-for="LastName">Last name</label><input asp-for="LastName" autocomplete="family-name" required>
+        <label asp-for="Email"></label><input asp-for="Email" autocomplete="email" required>
+        <label asp-for="Phone">Phone</label><input asp-for="Phone" type="tel" autocomplete="tel" required>
+        <label asp-for="Password">Password (at least eight characters)</label><input asp-for="Password" type="password" autocomplete="new-password" minlength="8" required>
+        <label asp-for="Role">Account type</label>
+        <select asp-for="Role"><option>Participant</option><option>Organiser</option></select>
+        <button>Create account</button>
+    </form>
+</section>

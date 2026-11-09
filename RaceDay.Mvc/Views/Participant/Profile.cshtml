@@ -1,0 +1,18 @@
+@model Profile
+@{ ViewData["Title"] = "My profile"; }
+<h1>My profile</h1>
+<section class="panel narrow">
+    @if (Model.ProfileImageUrl is not null)
+    {
+        <img class="avatar" src="@Url.Action("Image", "Races", new { kind = "profile", id = Model.Id })" alt="Your profile picture">
+    }
+    <p>Signed in as <strong>@Model.Email</strong></p>
+    <form asp-action="Profile" method="post" enctype="multipart/form-data" class="stack">
+        <label for="FirstName">First name</label><input id="FirstName" name="FirstName" value="@Model.FirstName" maxlength="60" required>
+        <label for="LastName">Last name</label><input id="LastName" name="LastName" value="@Model.LastName" maxlength="60" required>
+        <label for="Email">Email</label><input id="Email" name="Email" type="email" value="@Model.Email" required>
+        <label for="Phone">Phone</label><input id="Phone" name="Phone" type="tel" value="@Model.Phone" maxlength="20" required>
+        <label for="picture">Profile picture (PNG or JPEG, up to 5 MB)</label><input id="picture" name="picture" type="file" accept="image/png,image/jpeg">
+        <button>Save profile</button>
+    </form>
+</section>

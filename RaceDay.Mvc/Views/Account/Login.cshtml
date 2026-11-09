@@ -1,0 +1,13 @@
+@model LoginDto
+@{ ViewData["Title"] = "Sign in"; }
+<section class="panel narrow">
+    <p class="eyebrow">Your RaceDay account</p>
+    <h1>Sign in</h1>
+    <form asp-action="Login" method="post" class="stack">
+        <div asp-validation-summary="All" class="validation"></div>
+        <label asp-for="Email"></label><input asp-for="Email" autocomplete="username" required>
+        <label asp-for="Password"></label><input asp-for="Password" type="password" autocomplete="current-password" required>
+        <button>Sign in</button>
+    </form>
+    <p>New to RaceDay? <a asp-action="Register">Create an account</a>.</p>
+</section>

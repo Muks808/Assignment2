@@ -1,0 +1,14 @@
+{
+  "profiles": {
+    "Assignment2": {
+      "commandName": "Project",
+      "launchBrowser": false,
+      "applicationUrl": "http://localhost:5080",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "RaceDayStore__Path": "data/raceday.json",
+        "ConnectionStrings__RaceDayBlobs": "UseDevelopmentStorage=true"
+      }
+    }
+  }
+}
